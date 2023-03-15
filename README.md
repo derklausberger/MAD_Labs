@@ -2,7 +2,7 @@
 
 This repo is for all labs in MAD.
 
-# Installation:
+## Installation:
 1. execute following line in your IDE (e.g. Android Studio):
      - git clone https://github.com/derklausberger/MAD_Labs
 2. init gradle build process
