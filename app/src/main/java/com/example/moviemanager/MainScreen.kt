@@ -1,4 +1,4 @@
-package com.example.moviemanager.screens
+package com.example.moviemanager
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.*
@@ -7,21 +7,18 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
-import androidx.navigation.NavController
-import com.example.moviemanager.models.Screen
 import com.example.moviemanager.models.getMovies
-import com.example.moviemanager.widgets.DisplayMovies
 
 @Composable
-fun MainScreen(navController: NavController) {
+fun MainScreen() {
     Column {
-        HomeAppBar(navController)
-        DisplayMovies(movies = getMovies(), navController = navController)
+        HomeAppBar()
+        DisplayMovies(movies = getMovies())
     }
 }
 
 @Composable
-fun HomeAppBar(navController: NavController) {
+fun HomeAppBar() {
     var expanded by remember {
         mutableStateOf(false)
     }
@@ -45,7 +42,7 @@ fun HomeAppBar(navController: NavController) {
             ) {
                 DropdownMenuItem(
                     onClick = {
-                        navController.navigate(Screen.FavoriteScreen.route)
+
                     }
                 ) {
                     Icon(

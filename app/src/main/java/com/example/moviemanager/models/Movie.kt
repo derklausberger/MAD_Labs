@@ -140,11 +140,3 @@ fun getMovies(): List<Movie> {
 
         )
 }
-
-fun getMovieById(movieId: String): Movie? {
-    val movie = getMovies().filter { m -> movieId == m.id}
-
-    if (movie.size != 1) return null
-
-    return movie[0]
-}

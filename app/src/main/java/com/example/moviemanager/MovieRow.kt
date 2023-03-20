@@ -1,4 +1,4 @@
-package com.example.moviemanager.widgets
+package com.example.moviemanager
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
@@ -14,7 +14,6 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,23 +23,16 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.example.moviemanager.models.Movie
-import com.example.moviemanager.models.Screen
 
 @Composable
-fun DisplayMovies(movies: List<Movie>, navController: NavController) {
+fun DisplayMovies(movies: List<Movie>) {
     Column {
         LazyColumn {
             items(movies) { movie ->
                 MovieRow(m = movie) {
-                    navController.navigate(
-                        route = Screen.DetailScreen.setArgs(
-                            movieId = movie.id
-                        )
-                    )
                 }
             }
         }
