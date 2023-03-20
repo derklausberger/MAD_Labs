@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">MovieManager</string>
+    <string name="title_activity_favorite_screen">FavoriteScreen</string>
 </resources>

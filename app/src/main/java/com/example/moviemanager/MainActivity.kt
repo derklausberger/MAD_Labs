@@ -4,15 +4,22 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.rounded.MoreVert
-import androidx.compose.runtime.*
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.example.moviemanager.models.DETAIL_ARGUMENT_KEY
+import com.example.moviemanager.models.Screen
+import com.example.moviemanager.screens.DetailScreen
+import com.example.moviemanager.screens.FavoriteScreen
+import com.example.moviemanager.screens.MainScreen
 import com.example.moviemanager.ui.theme.MovieManagerTheme
-
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,39 +37,35 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@Preview
 @Composable
-fun TopAppDropDown() {
-    var expanded by remember {
-        mutableStateOf(false)
-    }
+fun Navigation() {
+    val navController = rememberNavController()
 
-    TopAppBar(
-        backgroundColor = Color.Blue,
-        title = {
-            Text(text = "Movies", color = Color.White)
-        },
-        actions = {
-            IconButton(onClick = { expanded = true }) {
-                Icon(
-                    imageVector = Icons.Rounded.MoreVert,
-                    contentDescription = null,
-                    tint = Color.White
-                )
-            }
-            DropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false },
-            ) {
-                DropdownMenuItem(
-                    onClick = {}
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Favorite,
-                        contentDescription = null
-                    )
-                    Text(text = "Favorites")
-                }
-            }
+    NavHost(navController = navController,
+        startDestination = Screen.MainScreen.route
+    ) {
+        composable(route = Screen.MainScreen.route) {
+            MainScreen(navController = navController)
         }
-    )
+
+        composable(
+            route = Screen.DetailScreen.route,
+            arguments = listOf(
+                navArgument(DETAIL_ARGUMENT_KEY) {
+                    type = NavType.StringType
+                    nullable = false
+                }
+            )
+        ) { backStackEntry ->
+            DetailScreen(
+                navController = navController,
+                movieId = backStackEntry.arguments?.getString(DETAIL_ARGUMENT_KEY)
+            )
+        }
+
+        composable(route = Screen.FavoriteScreen.route) {
+            FavoriteScreen(navController = navController)
+        }
+    }
 }
