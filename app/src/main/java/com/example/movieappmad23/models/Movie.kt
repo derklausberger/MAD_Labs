@@ -1,8 +1,8 @@
 package com.example.movieappmad23.models
 
 data class Movie(
-    val id: String,
-    val title: String,
+    var id: String,
+    var title: String,
     val year: String,
     val genre: List<Genre>,
     val director: String,
