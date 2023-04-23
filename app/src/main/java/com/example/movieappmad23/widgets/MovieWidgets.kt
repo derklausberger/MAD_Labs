@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
@@ -23,7 +24,6 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -31,15 +31,15 @@ import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.example.movieappmad23.R
 import com.example.movieappmad23.models.Movie
-import com.example.movieappmad23.models.getMovies
 import com.example.movieappmad23.ui.theme.Shapes
 
-@Preview
+/*@Preview*/
 @Composable
 fun MovieRow(
-    movie: Movie = getMovies()[0],
+    movie: Movie,// = getMovies()[0],
     modifier: Modifier = Modifier,
-    onItemClick: (String) -> Unit = {}
+    onItemClick: (Int) -> Unit = {},
+    onFavoriteClick: (Movie) -> Unit = {}
 ) {
     Card(modifier = modifier
         .clickable {
@@ -56,8 +56,12 @@ fun MovieRow(
                 .fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
-                MovieImage(imageUrl = movie.images[0])
-                FavoriteIcon()
+                val movieImages: List<String> = movie.images.split('[', ']', ',').filter { it.isNotBlank() }
+                MovieImage(imageUrl = movieImages[0])
+                FavoriteIcon(
+                    movie = movie,
+                    onFavoriteClick = onFavoriteClick
+                )
             }
 
             MovieDetails(modifier = Modifier.padding(12.dp), movie = movie)
@@ -78,28 +82,42 @@ fun MovieImage(imageUrl: String) {
             CircularProgressIndicator()
         }
     )
-
-
 }
 
 @Composable
-fun FavoriteIcon() {
+fun FavoriteIcon(movie: Movie, onFavoriteClick: (Movie) -> Unit) {
+    var liked = remember {
+        mutableStateOf(movie.isFavorite)
+    }
+
     Box(modifier = Modifier
         .fillMaxSize()
         .padding(10.dp),
         contentAlignment = Alignment.TopEnd
     ){
-        Icon(
-            tint = MaterialTheme.colors.secondary,
-            imageVector = Icons.Default.FavoriteBorder,
-            contentDescription = "Add to favorites")
+        IconButton(
+            modifier = Modifier
+                .padding(0.dp)
+                .size(40.dp),
+            onClick = {
+                liked.value = !liked.value
+                onFavoriteClick(movie) },
+
+        ) {
+            Icon(
+                tint = MaterialTheme.colors.secondary,
+                imageVector =
+                if (liked.value) Icons.Default.Favorite
+                else Icons.Default.FavoriteBorder,
+                contentDescription = "Add to favorites",
+            )
+        }
     }
 }
 
 
 @Composable
 fun MovieDetails(modifier: Modifier = Modifier, movie: Movie) {
-
     var expanded by remember {
         mutableStateOf(false)
     }
@@ -156,8 +174,10 @@ fun MovieDetails(modifier: Modifier = Modifier, movie: Movie) {
 
 @Composable
 fun HorizontalScrollableImageView(movie: Movie) {
+    val movieImages: List<String> = movie.images.split('[', ']', ',').filter { it.isNotBlank() }
+
     LazyRow {
-        items(movie.images) { image ->
+        items(movieImages) { image ->
             Card(
                 modifier = Modifier
                     .padding(12.dp)
